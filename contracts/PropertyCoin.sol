@@ -2,6 +2,10 @@ pragma solidity ^0.4.24;
 
 import '../node_modules/zeppelin-solidity/contracts/token/ERC20/StandardToken.sol';
 
+/**
+ * @title PropertyCoin An ERC20 used as currency to pay to occupy a property
+ * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
+ */
 contract PropertyCoin is StandardToken {
 
   string public constant name = "PropertyCoin";

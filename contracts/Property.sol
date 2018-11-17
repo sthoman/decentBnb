@@ -2,10 +2,14 @@ pragma solidity 0.4.24;
 
 import '../node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721Token.sol';
 
+
+/**
+ * @title Property An NFT to represent a property
+ * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
+ */
 contract Property is ERC721Token {
 
   constructor(string _name, string _symbol) public ERC721Token(_name, _symbol) {
-    //leave empty for now, we've passed through the args above (i.e. super)
   }
 
   modifier onlyOwner(uint256 _tokenId) {
