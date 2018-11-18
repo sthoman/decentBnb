@@ -27,7 +27,7 @@ contract PropertyRegistry {
   }
 
   // Mapping from the _tokenId of the NFT to data about the property
-  mapping(uint256 => Data) propertyDetails;
+  mapping(uint256 => Data) public propertyDetails;
 
   // Constructor
   constructor(address _propertyContract) public {
@@ -90,8 +90,8 @@ contract PropertyRegistry {
    * @param _tokenId uint256 ID of the NFT
    */
   function checkIn(uint _tokenId) public {
-    require(propertyDetails[_tokenId].approved == msg.sender);
-    require(now > propertyDetails[_tokenId].checkIn);
+    require(propertyDetails[_tokenId].approved == msg.sender, "Guest must be approved to check in");
+    require(now > propertyDetails[_tokenId].checkIn, "Check in time must be prior to now");
     propertyDetails[_tokenId].occupant = msg.sender;
   }
 
@@ -100,7 +100,7 @@ contract PropertyRegistry {
    * @param _tokenId uint256 ID of the NFT
    */
   function checkOut(uint _tokenId) public {
-    require(propertyDetails[_tokenId].occupant == msg.sender);
+    require(propertyDetails[_tokenId].occupant == msg.sender, "Only the occupant is allowed to check out");
     propertyDetails[_tokenId].requested = address(0);
   }
 }
