@@ -18,6 +18,7 @@ contract PropertyRegistry {
   // occupant and requested occupant, and URI containing metadata
   struct Data {
     uint256 price;
+    uint256 stays;
     address requested;
     address approved;
     address occupant;
@@ -30,8 +31,9 @@ contract PropertyRegistry {
   mapping(uint256 => Data) public propertyDetails;
 
   // Constructor
-  constructor(address _propertyContract) public {
+  constructor(address _propertyContract, address _propertyToken) public {
     propertyContract = ERC721Basic(_propertyContract);
+    propertyToken = ERC20(_propertyToken);
   }
 
   // Modifier to validate only the owner of the NFT
@@ -66,7 +68,7 @@ contract PropertyRegistry {
    * @param _uri uri of the property
    */
   function registerProperty(uint256 _tokenId, uint256 _price, string _uri) public onlyOwner(_tokenId) {
-    propertyDetails[_tokenId] = Data(_price, address(0), address(0), address(0), 0, 0, _uri);
+    propertyDetails[_tokenId] = Data(_price, 0, address(0), address(0), address(0), 0, 0, _uri);
   }
 
   /**
@@ -89,18 +91,29 @@ contract PropertyRegistry {
    * @dev Check into a particular property
    * @param _tokenId uint256 ID of the NFT
    */
-  function checkIn(uint _tokenId) public {
-    require(propertyDetails[_tokenId].approved == msg.sender, "Guest must be approved to check in");
-    require(now > propertyDetails[_tokenId].checkIn, "Check in time must be prior to now");
-    propertyDetails[_tokenId].occupant = msg.sender;
-  }
+   function checkIn(uint256 _tokenId) external {
+     require(propertyDetails[_tokenId].approved == msg.sender);
+     require(now > propertyDetails[_tokenId].checkIn);
+     //REQUIRED: transfer tokens to propertyRegistry upon successful check in
+     //the message sender should have approved the propertyRegistry to transfer
+     //at least stayData[_tokenId].price tokens
+     //address(this) == this contract address
+     require(propertyToken.transferFrom(msg.sender, address(this), propertyDetails[_tokenId].price));
+     //move approved guest to occupant
+     propertyDetails[_tokenId].occupant = propertyDetails[_tokenId].approved;
+   }
 
   /**
    * @dev Check out of a particular property
    * @param _tokenId uint256 ID of the NFT
    */
-  function checkOut(uint _tokenId) public {
-    require(propertyDetails[_tokenId].occupant == msg.sender, "Only the occupant is allowed to check out");
-    propertyDetails[_tokenId].requested = address(0);
-  }
+   function checkOut(uint256 _tokenId) external {
+     require(propertyDetails[_tokenId].occupant == msg.sender);
+     require(now < propertyDetails[_tokenId].checkOut);
+     //REQUIRED: transfer tokens to Alice upon successful check out
+     require(propertyToken.transfer(propertyContract.ownerOf(_tokenId), propertyDetails[_tokenId].price));
+     //clear the request to let another guest request
+     propertyDetails[_tokenId].requested = address(0);
+     propertyDetails[_tokenId].stays++;
+   }
 }
