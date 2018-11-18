@@ -1,11 +1,11 @@
-var Property = artifacts.require("./Property.sol");
-var PropertyCoin = artifacts.require("./PropertyCoin.sol");
-var PropertyRegistry = artifacts.require("./PropertyRegistry.sol");
+const property = artifacts.require("./Property.sol");
+const propertyRegistry = artifacts.require("./PropertyRegistry.sol");
+const propertyToken = artifacts.require("./PropertyToken.sol");
 
 module.exports = function(deployer) {
-    deployer.deploy(Property, 'Property', 'PROP').then(
-      () => {
-        deployer.deploy(PropertyCoin);
-        deployer.deploy(PropertyRegistry, Property.address);
-    });
+    deployer.deploy(property, "Property", "PROP").then(() => {
+         return deployer.deploy(propertyRegistry, property.address).then(() => {
+              return deployer.deploy(propertyToken, "propertyToken", "BNB", 2)
+         })
+      })
 };
