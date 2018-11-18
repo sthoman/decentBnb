@@ -17,8 +17,10 @@ contract Property is ERC721Token {
     _;
   }
 
-  function createProperty() external {
-    _mint(msg.sender, allTokens.length + 1);
+  function createProperty() external returns(uint256) {
+    uint256 len = allTokens.length + 1;
+    _mint(msg.sender, len);
+    return len; 
   }
 
   function setURI(uint256 _tokenId, string _uri) external onlyOwner(_tokenId) {
