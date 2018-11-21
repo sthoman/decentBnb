@@ -28,7 +28,7 @@ contract PropertyRegistry {
   }
 
   // Mapping from the _tokenId of the NFT to data about the property
-  mapping(uint256 => Data) public propertyDetails;
+  mapping(uint256 => Data) propertyDetails;
 
   // Constructor
   constructor(address _propertyContract, address _propertyToken) public {
@@ -53,9 +53,19 @@ contract PropertyRegistry {
    * @param _tokenId uint256 ID of the token to query
    * @return structure containing the extended data about the property
    */
-  function getPropertyDetails(uint256 _tokenId) public view returns(uint256, address, string) {
+  function getPropertyDetailsRequested(uint256 _tokenId) public view returns (address) {
+    return propertyDetails[_tokenId].requested;
+  }
+
+  /**
+   * @dev Gets the details of a property based on its NFT
+   * @param _tokenId uint256 ID of the token to query
+   * @return structure containing the extended data about the property
+   */
+  function getPropertyDetails(uint256 _tokenId) public view returns(uint256, address, address, string) {
     return (
       propertyDetails[_tokenId].price,
+      propertyDetails[_tokenId].requested,
       propertyDetails[_tokenId].occupant,
       propertyDetails[_tokenId].uri
     );

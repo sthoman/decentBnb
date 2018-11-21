@@ -10,6 +10,7 @@ contract('PropertyRegistry Contract Tests', accounts => {
   contract_address = '';
   token_address = '';
   allocation = 10000;
+  token_NFT = undefined;
   _propertyToken = undefined;
   _propertyRegistry = undefined;
 
@@ -34,7 +35,9 @@ contract('PropertyRegistry Contract Tests', accounts => {
   it('should be able to create a property, Property', async () => {
     let _property = await Property.at(contract_address);
     try {
-      const tx = await _property.createProperty();
+      const tx = await _property.createProperty({ from: alice });
+      token_NFT = await property.tokenOfOwnerByIndex(alice, 0);
+      token_NFT = token_NFT.c[0];
     } catch(e) {
       assert(false, 'could not create a property');
     }
@@ -49,21 +52,20 @@ contract('PropertyRegistry Contract Tests', accounts => {
 
   it('should be able to register a property, PropertyRegistry', async () => {
     _propertyRegistry = await PropertyRegistry.at(registry_address);
-    await _propertyRegistry.registerProperty(1, 100000, 'https://');
-    assert(_propertyRegistry.propertyDetails !== undefined, 'PropertyRegistry registration failed');
+    await _propertyRegistry.registerProperty(token_NFT, 1000, 'https://www.test.com', { from: alice });
+    assert(_propertyRegistry.getPropertyDetails(token_NFT) !== undefined, 'PropertyRegistry registration failed');
   });
 
-  it('should allow bob to approve the property registry to use his tokens', async () => {
+
+  it('should allow alice to approve the property registry to use his tokens', async () => {
     const tx = await _propertyToken.approve(_propertyRegistry.address, 1000, { from: bob });
-    console.log(tx);
     assert(tx !== undefined, 'property has not been approved');
   });
 
-/*
   it('should take a request from Bob, PropertyRegistry', async () => {
-    await _propertyRegistry.requestStay(property.address, { from: bob });
-    assert(_propertyRegistry.propertyDetails.length == 1, 'PropertyRegistry took a request from Bob')
+    let awaitRequest = await _propertyRegistry.requestStay(token_NFT, { from: bob });
+    let shouldBeBob = await _propertyRegistry.getPropertyDetailsRequested(token_NFT);
+    assert(shouldBeBob === bob, 'PropertyRegistry took a request from Bob')
   });
-*/
 
 });
