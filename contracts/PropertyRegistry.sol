@@ -30,6 +30,13 @@ contract PropertyRegistry {
   // Mapping from the _tokenId of the NFT to data about the property
   mapping(uint256 => Data) propertyDetails;
 
+  // Events
+  event Approved(uint256 indexed _tokenId);
+  event Requested(uint256 indexed _tokenId);
+  event Registered(uint256 indexed _tokenId);
+  event CheckIn(uint256 indexed _tokenId);
+  event CheckOut(uint256 indexed _tokenId);
+
   // Constructor
   constructor(address _propertyContract, address _propertyToken) public {
     propertyContract = ERC721Basic(_propertyContract);
@@ -62,12 +69,15 @@ contract PropertyRegistry {
    * @param _tokenId uint256 ID of the token to query
    * @return structure containing the extended data about the property
    */
-  function getPropertyDetails(uint256 _tokenId) public view returns(uint256, address, address, string) {
+  function getStayData(uint256 _tokenId) external view returns(uint256, uint256, address, address, address, uint256, uint256) {
     return (
       propertyDetails[_tokenId].price,
+      propertyDetails[_tokenId].stays,
       propertyDetails[_tokenId].requested,
+      propertyDetails[_tokenId].approved,
       propertyDetails[_tokenId].occupant,
-      propertyDetails[_tokenId].uri
+      propertyDetails[_tokenId].checkIn,
+      propertyDetails[_tokenId].checkOut
     );
   }
 
@@ -79,6 +89,7 @@ contract PropertyRegistry {
    */
   function registerProperty(uint256 _tokenId, uint256 _price, string _uri) public onlyOwner(_tokenId) {
     propertyDetails[_tokenId] = Data(_price, 0, address(0), address(0), address(0), 0, 0, _uri);
+    emit Registered(_tokenId);
   }
 
   /**
@@ -87,6 +98,7 @@ contract PropertyRegistry {
    */
   function requestStay(uint256 _tokenId) public notRequested(_tokenId) {
     propertyDetails[_tokenId].requested = msg.sender;
+    emit Requested(_tokenId);
   }
 
   /**
@@ -95,6 +107,7 @@ contract PropertyRegistry {
    */
   function approveRequest(uint256 _tokenId) public onlyOwner(_tokenId) {
     propertyDetails[_tokenId].approved = propertyDetails[_tokenId].requested;
+    emit Approved(_tokenId);
   }
 
   /**
@@ -111,6 +124,7 @@ contract PropertyRegistry {
      require(propertyToken.transferFrom(msg.sender, address(this), propertyDetails[_tokenId].price));
      //move approved guest to occupant
      propertyDetails[_tokenId].occupant = propertyDetails[_tokenId].approved;
+     emit CheckIn(_tokenId);
    }
 
   /**
@@ -125,5 +139,6 @@ contract PropertyRegistry {
      //clear the request to let another guest request
      propertyDetails[_tokenId].requested = address(0);
      propertyDetails[_tokenId].stays++;
+     emit CheckOut(_tokenId);
    }
 }

@@ -52,10 +52,9 @@ contract('PropertyRegistry Contract Tests', accounts => {
 
   it('should be able to register a property, PropertyRegistry', async () => {
     _propertyRegistry = await PropertyRegistry.at(registry_address);
-    await _propertyRegistry.registerProperty(token_NFT, 1000, 'https://www.test.com', { from: alice });
-    assert(_propertyRegistry.getPropertyDetails(token_NFT) !== undefined, 'PropertyRegistry registration failed');
+    await _propertyRegistry.registerProperty(token_NFT, 1000, 'https://', { from: alice });
+    assert(_propertyRegistry.getStayData(token_NFT) !== undefined, 'PropertyRegistry registration failed');
   });
-
 
   it('should allow alice to approve the property registry to use his tokens', async () => {
     const tx = await _propertyToken.approve(_propertyRegistry.address, 1000, { from: bob });
@@ -64,8 +63,8 @@ contract('PropertyRegistry Contract Tests', accounts => {
 
   it('should take a request from Bob, PropertyRegistry', async () => {
     let awaitRequest = await _propertyRegistry.requestStay(token_NFT, { from: bob });
-    let shouldBeBob = await _propertyRegistry.getPropertyDetailsRequested(token_NFT);
-    assert(shouldBeBob === bob, 'PropertyRegistry took a request from Bob')
+    let propDetails = await _propertyRegistry.getStayData(token_NFT);
+    assert(propDetails[2] === bob, 'PropertyRegistry took a request from Bob')
   });
 
 });
