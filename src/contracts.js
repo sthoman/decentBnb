@@ -23,6 +23,21 @@ var BNBContracts = (async function (self, transactSender) {
     }
   }
 
+  //  Converts the on-chain struct representation of a property
+  //  into a friendlier JS object
+  //
+  var getObjectFromArray = function(propertyArray) {
+    return {
+      price: propertyArray[0].c[0],
+      stays: propertyArray[1].c[0],
+      requested: propertyArray[2],
+      approved: propertyArray[3],
+      occupant: propertyArray[4],
+      checkIn: propertyArray[5].c[0],
+      checkOut: propertyArray[6].c[0]
+    };
+  }
+
   const propertyJson = await fetch('../build/contracts/Property.json').then((res) => res.json());
   propertyContract = await getContract(propertyJson);
 
@@ -66,6 +81,7 @@ var BNBContracts = (async function (self, transactSender) {
     for (var i = 0; i < properties.length; i++) {
       let tokenId = properties[i].c[0];
       let tokenIdStayData = await propertyRegistryContract.getStayData(tokenId, transactSender);
+      tokenIdStayData = getObjectFromArray(tokenIdStayData);
       tokenIdStayData.uri = await propertyContract.getURI.call(tokenId);
       propertiesList.push(tokenIdStayData);
     }

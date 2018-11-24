@@ -23,10 +23,7 @@
       </div>
     </div>
     <div class='row'>
-        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-        <!-- Indicators -->
-        <ol class="carousel-indicators"></ol>
-        <!-- Wrapper for slides -->
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="false">
         <div class="carousel-inner"></div>
         <!-- Controls -->
         <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
@@ -43,22 +40,19 @@
     (async () => {
       console.log("hell-o");
 
-      var contracts = await BNBContracts;
       //var propertyTokenId = await contracts.createProperty("http://www.sthoman.com");
       //var propertyRegistered = await contracts.registerProperty(propertyTokenId, 1000);
+
+      var contracts = await BNBContracts;
       var properties = await contracts.propertyBrowser();
 
-      console.log(properties);
-
       for (var i = 0 ; i < properties.length ; i++) {
-
-        $('<div class="item">'+properties[i].uri+'<div class="carousel-caption"></div></div>').appendTo('.carousel-inner');
-        $('<li data-target="#carousel-example-generic" data-slide-to="'+i+'"></li>').appendTo('.carousel-indicators')
+        $('<div class="item row"><div class="d-block w-25"><span>'+properties[i].occupant+'</span></div><div class="carousel-caption"></div></div>')
+          .appendTo('.carousel-inner');
       }
 
       $('.item').first().addClass('active');
-    //  $('.carousel-indicators > li').first().addClass('active');
-    //  $('#carousel-example-generic').carousel();
+      $('#carousel-example-generic').carousel({ interval: false });
 
     })();
 
