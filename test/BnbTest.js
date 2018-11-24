@@ -52,7 +52,7 @@ contract('PropertyRegistry Contract Tests', accounts => {
 
   it('should be able to register a property, PropertyRegistry', async () => {
     _propertyRegistry = await PropertyRegistry.at(registry_address);
-    await _propertyRegistry.registerProperty(token_NFT, 1000, 'https://', { from: alice });
+    await _propertyRegistry.registerProperty(token_NFT, 1000, { from: alice });
     assert(_propertyRegistry.getStayData(token_NFT) !== undefined, 'PropertyRegistry registration failed');
   });
 

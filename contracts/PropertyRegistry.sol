@@ -24,7 +24,6 @@ contract PropertyRegistry {
     address occupant;
     uint256 checkIn;
     uint256 checkOut;
-    string uri;
   }
 
   // Mapping from the _tokenId of the NFT to data about the property
@@ -60,15 +59,6 @@ contract PropertyRegistry {
    * @param _tokenId uint256 ID of the token to query
    * @return structure containing the extended data about the property
    */
-  function getPropertyDetailsRequested(uint256 _tokenId) public view returns (address) {
-    return propertyDetails[_tokenId].requested;
-  }
-
-  /**
-   * @dev Gets the details of a property based on its NFT
-   * @param _tokenId uint256 ID of the token to query
-   * @return structure containing the extended data about the property
-   */
   function getStayData(uint256 _tokenId) external view returns(uint256, uint256, address, address, address, uint256, uint256) {
     return (
       propertyDetails[_tokenId].price,
@@ -85,10 +75,9 @@ contract PropertyRegistry {
    * @dev Registers a new property NFT as a property in this contract
    * @param _tokenId uint256 ID of the NFT
    * @param _price price of the property
-   * @param _uri uri of the property
    */
-  function registerProperty(uint256 _tokenId, uint256 _price, string _uri) public onlyOwner(_tokenId) {
-    propertyDetails[_tokenId] = Data(_price, 0, address(0), address(0), address(0), 0, 0, _uri);
+  function registerProperty(uint256 _tokenId, uint256 _price) public onlyOwner(_tokenId) {
+    propertyDetails[_tokenId] = Data(_price, 0, address(0), address(0), address(0), 0, 0);
     emit Registered(_tokenId);
   }
 
@@ -123,7 +112,7 @@ contract PropertyRegistry {
      //address(this) == this contract address
      require(propertyToken.transferFrom(msg.sender, address(this), propertyDetails[_tokenId].price));
      //move approved guest to occupant
-     propertyDetails[_tokenId].occupant = propertyDetails[_tokenId].approved;
+     propertyDetails[_tokenId].occupant = msg.sender;
      emit CheckIn(_tokenId);
    }
 

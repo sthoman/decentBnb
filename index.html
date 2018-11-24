@@ -1,63 +1,66 @@
 <html>
 <head>
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<!--  <link rel="stylesheet" type="text/css" href="styles/app.css"> -->
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@v0.20.6/dist/web3.js"></script>
   <script src="/node_modules/truffle-contract/dist/truffle-contract.js"></script>
+  <script src="/src/init.js"></script>
+  <script src="/src/contracts.js"></script>
 </head>
 <body>
-  <button id='someButton'>Clickity</button>
+  <!--
+  <input type="button" id='createProperty'>Generate Property</input>
+  <input type="text" id='propertyUri'></input>
+-->
+
+  <div class="container">
+    <div class="row">
+      <div class='col-md-offset-2 col-md-8 text-center'>
+      <h2>Decent BnB</h2>
+      </div>
+    </div>
+    <div class='row'>
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators"></ol>
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner"></div>
+        <!-- Controls -->
+        <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+      </div>
+    </div>
+
   <script>
 
-    let web3Provider;
-    //if (typeof web3 !== 'undefined') {
-      // this will work if a web3 instance has been injected
-      // such is the case with Metamask
-  //    web3Provider = web3.currentProvider;
-  //  }
-  //  else {
-      // but for our purpose we'll connect to truffle
-      web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545/');
-  //  }
-    window.web3 = new Web3(web3Provider);
+    (async () => {
+      console.log("hell-o");
 
-    async function PropertyInit() {
+      var contracts = await BNBContracts;
+      //var propertyTokenId = await contracts.createProperty("http://www.sthoman.com");
+      //var propertyRegistered = await contracts.registerProperty(propertyTokenId, 1000);
+      var properties = await contracts.propertyBrowser();
 
-      var getContract = function(json, web3 = window.web3) {
-        const contract = TruffleContract(json);
-        contract.setProvider(web3.currentProvider);
-        return contract.deployed();
+      console.log(properties);
+
+      for (var i = 0 ; i < properties.length ; i++) {
+
+        $('<div class="item">'+properties[i].uri+'<div class="carousel-caption"></div></div>').appendTo('.carousel-inner');
+        $('<li data-target="#carousel-example-generic" data-slide-to="'+i+'"></li>').appendTo('.carousel-indicators')
       }
 
-      const json = await fetch('../build/contracts/Property.json').then((res) => res.json());
-      propertyContract = await getContract(json);
+      $('.item').first().addClass('active');
+    //  $('.carousel-indicators > li').first().addClass('active');
+    //  $('#carousel-example-generic').carousel();
 
-      const event = propertyContract.allEvents({ fromBlock: 0, toBlock: 'latest' });
-      event.watch((err, res) => {
-        if (err)
-          console.log('watch error', err)
-        else
-          console.log('got an event', res)
-      });
-    }
-
-    PropertyInit().then(console.log('all done'))
-
-    const { accounts } = web3.eth;
-    const alice = accounts[0];
-    const bob = accounts[1];
-
-    document.querySelector('#someButton').onclick = async () => {
-      try {
-        const tx = await propertyContract.createProperty({
-          from: alice,
-          gas: 250000
-        });
-        console.log(tx);
-        console.log('Property Created for Alice');
-      } catch(e) {
-        console.log(e);
-        alert('Error creating property', e)
-      }
-    }
+    })();
 
   </script>
 </body>
