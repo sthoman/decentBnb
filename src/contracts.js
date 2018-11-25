@@ -1,5 +1,5 @@
 
-//  Test harness for the contracts. This class initializes each contract,
+//  Wrapper for the smart contracts. This class initializes each contract,
 //  sets up watchers, and provides public methods to interact with each
 //  smart contract function needed for the decentralized Airbnb.
 //
