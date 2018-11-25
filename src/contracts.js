@@ -14,6 +14,8 @@ var BNBContracts = (async function (self, transactSender) {
     return contract.deployed();
   }
 
+  //
+  //
   var getContractEventCallback = function() {
     return (err, res) => {
       if (err)
@@ -38,6 +40,8 @@ var BNBContracts = (async function (self, transactSender) {
     };
   }
 
+  //  Assemble each contract from the JSON representation of its ABI
+  //
   const propertyJson = await fetch('../build/contracts/Property.json').then((res) => res.json());
   propertyContract = await getContract(propertyJson);
 
@@ -63,11 +67,17 @@ var BNBContracts = (async function (self, transactSender) {
     return transactionNft.c[0];
   }
 
+  //  Register a property, creating a new mapping inside of the
+  //  PropertyRegistry contract to represent a space you can check in
+  //  or out of
+  //
   async function registerProperty(tokenId, price) {
     let transaction = await propertyRegistryContract.registerProperty(tokenId, price, transactSender);
     return transaction;
   }
 
+  //  Get the details of a specific property from the mapping
+  //
   async function getPropertyDetails() {
     let properties = await propertyRegistryContract.getStayData(transactSender);
     return properties;
@@ -88,7 +98,7 @@ var BNBContracts = (async function (self, transactSender) {
     return propertiesList;
   }
 
-  //
+  // Public members
   //
   self.createProperty = createProperty;
   self.registerProperty = registerProperty;
