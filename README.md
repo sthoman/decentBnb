@@ -3,8 +3,8 @@ Decentralized Airbnb project for LHL October 2018 cohort.
 
 ### Setup
 
-Currently built with Google Cloud Datastore, BigQuery, Tensorflow, Keras, for application with the Kraken Exchange API.
-    
+TBD
+
 ### Structure
 
 |folder|description|
