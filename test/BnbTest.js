@@ -56,15 +56,33 @@ contract('PropertyRegistry Contract Tests', accounts => {
     assert(_propertyRegistry.getStayData(token_NFT) !== undefined, 'PropertyRegistry registration failed');
   });
 
-  it('should allow alice to approve the property registry to use his tokens', async () => {
+  it('should allow bob to approve the property registry to use his tokens', async () => {
     const tx = await _propertyToken.approve(_propertyRegistry.address, 1000, { from: bob });
     assert(tx !== undefined, 'property has not been approved');
   });
 
+  //  Tests main workflow -
+  //  Bob requests to stay at the property, Alice approves Bob's
+  //  request, and Bob checks in. Each time check the stay data
+  //  to ensure the addresses are updating correctly.
+  //
   it('should take a request from Bob, PropertyRegistry', async () => {
     let awaitRequest = await _propertyRegistry.requestStay(token_NFT, { from: bob });
     let propDetails = await _propertyRegistry.getStayData(token_NFT);
     assert(propDetails[2] === bob, 'PropertyRegistry took a request from Bob')
+  });
+
+  it('should allow Alice to approve Bob for check in, PropertyRegistry', async () => {
+    let awaitApproval = await _propertyRegistry.approveRequest(token_NFT, { from: alice });
+    let propDetails = await _propertyRegistry.getStayData(token_NFT);
+    assert(propDetails[3] === bob, 'PropertyRegistry allowed Alice to approve Bobs request')
+  });
+
+  it('should allow Bob to check in, PropertyRegistry', async () => {
+    let awaitCheckin = await _propertyRegistry.checkIn(token_NFT, { from: bob });
+    let propDetails = await _propertyRegistry.getStayData(token_NFT);
+    console.log(propDetails);
+    assert(propDetails[4] === bob, 'PropertyRegistry allowed Bob to check in')
   });
 
 });
