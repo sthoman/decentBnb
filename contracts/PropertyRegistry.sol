@@ -96,6 +96,7 @@ contract PropertyRegistry {
    */
   function approveRequest(uint256 _tokenId) public onlyOwner(_tokenId) {
     propertyDetails[_tokenId].approved = propertyDetails[_tokenId].requested;
+    propertyDetails[_tokenId].requested = address(0);
     emit Approved(_tokenId);
   }
 
@@ -113,6 +114,7 @@ contract PropertyRegistry {
      require(propertyToken.transferFrom(msg.sender, address(this), propertyDetails[_tokenId].price));
      //move approved guest to occupant
      propertyDetails[_tokenId].occupant = msg.sender;
+     propertyDetails[_tokenId].approved = address(0);
      emit CheckIn(_tokenId);
    }
 

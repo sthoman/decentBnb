@@ -69,20 +69,22 @@ contract('PropertyRegistry Contract Tests', accounts => {
   it('should take a request from Bob, PropertyRegistry', async () => {
     let awaitRequest = await _propertyRegistry.requestStay(token_NFT, { from: bob });
     let propDetails = await _propertyRegistry.getStayData(token_NFT);
-    assert(propDetails[2] === bob, 'PropertyRegistry took a request from Bob')
+    assert(propDetails[2] === bob, 'PropertyRegistry took a request from Bob');
   });
 
   it('should allow Alice to approve Bob for check in, PropertyRegistry', async () => {
     let awaitApproval = await _propertyRegistry.approveRequest(token_NFT, { from: alice });
     let propDetails = await _propertyRegistry.getStayData(token_NFT);
-    assert(propDetails[3] === bob, 'PropertyRegistry allowed Alice to approve Bobs request')
+    assert(propDetails[3] === bob, 'PropertyRegistry allowed Alice to approve Bobs request');
+    assert(propDetails[2] !== bob, 'PropertyRegistry allowed Alice to approve Bobs request');
   });
 
   it('should allow Bob to check in, PropertyRegistry', async () => {
     let awaitCheckin = await _propertyRegistry.checkIn(token_NFT, { from: bob });
     let propDetails = await _propertyRegistry.getStayData(token_NFT);
     console.log(propDetails);
-    assert(propDetails[4] === bob, 'PropertyRegistry allowed Bob to check in')
+    assert(propDetails[4] === bob, 'PropertyRegistry allowed Bob to check in');
+    assert(propDetails[3] !== bob, 'PropertyRegistry allowed Bob to check in');
   });
 
 });
