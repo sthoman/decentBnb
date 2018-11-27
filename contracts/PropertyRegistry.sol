@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
-import '../node_modules/zeppelin-solidity/contracts/token/ERC20/ERC20.sol';
-import '../node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721Basic.sol';
+import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol';
+import '../node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721Basic.sol';
 
 /**
  * @title PropertyRegistry Registry pattern for properties driven by the Non-Fungible Token Standard

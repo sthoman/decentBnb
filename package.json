@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.4",
-    "truffle-contract": "^3.0.6",
-    "zeppelin-solidity": "1.11.0"
+    "openzeppelin-solidity": "^1.11.0",
+    "truffle-contract": "^3.0.6"
   }
 }
