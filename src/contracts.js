@@ -18,6 +18,7 @@ var BNBContracts = (async function (self, transactSender) {
   //
   var getContractEventCallback = function() {
     return (err, res) => {
+      console.log('cb!');
       if (err)
         console.log('watch error', err)
       else
@@ -51,11 +52,11 @@ var BNBContracts = (async function (self, transactSender) {
   const propertyRegistryJson = await fetch('../build/contracts/PropertyRegistry.json').then((res) => res.json());
   propertyRegistryContract = await getContract(propertyRegistryJson);
 
-  //  TODO watchers causing a lot of requests
   //
-  //propertyContract.allEvents({ fromBlock: 0, toBlock: 'latest' }).watch(getContractEventCallback());
-  //propertyTokenContract.allEvents({ fromBlock: 0, toBlock: 'latest' }).watch(getContractEventCallback());
-  //propertyRegistryContract.allEvents({ fromBlock: 0, toBlock: 'latest' }).watch(getContractEventCallback());
+  //
+  propertyContract.allEvents({ fromBlock: 0, toBlock: 'latest' }).watch((err, res) => { console.log(res) });
+  propertyTokenContract.allEvents({ fromBlock: 0, toBlock: 'latest' }).watch(getContractEventCallback());
+  propertyRegistryContract.allEvents({ fromBlock: 0, toBlock: 'latest' }).watch(getContractEventCallback());
 
   //  Creates a property and returns the identifier of the non-
   //  fungible token that represents the newly created property
@@ -95,6 +96,8 @@ var BNBContracts = (async function (self, transactSender) {
       tokenIdStayData.uri = await propertyContract.getURI.call(tokenId);
       propertiesList.push(tokenIdStayData);
     }
+    console.log('propertiesList=');
+    console.log(propertiesList);
     return propertiesList;
   }
 

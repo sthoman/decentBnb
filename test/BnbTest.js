@@ -82,7 +82,6 @@ contract('PropertyRegistry Contract Tests', accounts => {
   it('should allow Bob to check in, PropertyRegistry', async () => {
     let awaitCheckin = await _propertyRegistry.checkIn(token_NFT, { from: bob });
     let propDetails = await _propertyRegistry.getStayData(token_NFT);
-    console.log(propDetails);
     assert(propDetails[4] === bob, 'PropertyRegistry allowed Bob to check in');
     assert(propDetails[3] !== bob, 'PropertyRegistry allowed Bob to check in');
   });
