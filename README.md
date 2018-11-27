@@ -1,4 +1,4 @@
-<a href="https://vector.me/browse/258331/geodesic_dome" title="Geodesic Dome" target="_blank"></a> 
+![alt text](https://github.com/sthoman/decentBnb/blob/master/dome.jpg?raw=true)
 
 # decentBnb
 Decentralized Airbnb project for LHL October 2018 cohort. 
