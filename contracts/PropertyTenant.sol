@@ -7,8 +7,6 @@ import '../node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721Token
  *        Specifically, this NFT represents the right of the tenant to sublet aka
  *        provide the property for temporary use via this decentralized platform
  *
- *
-
  * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
  */
 contract PropertyTenant is ERC721Token {
@@ -21,19 +19,7 @@ contract PropertyTenant is ERC721Token {
     _;
   }
 
-  function createProperty() external returns(uint256) {
+  function createTenancyRight() external returns(uint256) {
     _mint(msg.sender, allTokens.length + 1);
-  }
-
-  function setURI(uint256 _tokenId, string _uri) external onlyOwner(_tokenId) {
-    _setTokenURI(_tokenId, _uri);
-  }
-
-  function getURI(uint256 _tokenId) external view returns(string) {
-    return tokenURIs[_tokenId];
-  }
-
-  function getProperties() external view returns(uint256[]) {
-    return ownedTokens[msg.sender];
   }
 }
