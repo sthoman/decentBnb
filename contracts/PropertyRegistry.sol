@@ -2,17 +2,21 @@ pragma solidity ^0.4.24;
 
 import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol';
 import '../node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721Basic.sol';
+import '../../ethereum-api/oraclizeAPI_0.4.sol';
 
 /**
  * @title PropertyRegistry Registry pattern for properties driven by the Non-Fungible Token Standard
  * @dev see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
  */
-contract PropertyRegistry {
+contract PropertyRegistry is usingOraclize {
 
   // A utility token to transact for properties in decentralized
   // airbnb and a contract facilitating multiple property NFTs
   ERC20 propertyToken;
   ERC721Basic propertyContract;
+
+  // Oraclize result at url
+  bytes32 oracleResult;
 
   // Storage data relevant to the property, the addresses of it's
   // occupant and requested occupant, and URI containing metadata
@@ -40,6 +44,7 @@ contract PropertyRegistry {
   constructor(address _propertyContract, address _propertyToken) public {
     propertyContract = ERC721Basic(_propertyContract);
     propertyToken = ERC20(_propertyToken);
+    OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
   }
 
   // Modifier to validate only the owner of the NFT
@@ -79,6 +84,13 @@ contract PropertyRegistry {
   function registerProperty(uint256 _tokenId, uint256 _price) public onlyOwner(_tokenId) {
     propertyDetails[_tokenId] = Data(_price, 0, address(0), address(0), address(0), 0, 0);
     emit Registered(_tokenId);
+  }
+
+  /**
+   * @dev Simple oraclize query test
+   */
+  function testOraclize(uint256 _tokenId) {
+    bytes32 id = oraclize_query("URL", "http://www.google.com/");
   }
 
   /**

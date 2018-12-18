@@ -20,6 +20,16 @@ module.exports = {
             host: "localhost",
             port: 7545,
             network_id: "*"
+        },
+        ganachecli: {
+            host: "localhost",
+            port: 8545,
+            network_id: "*"
+        },
+        kovan: {
+            host: "https://kovan.infura.io",
+            port: 443,
+            network_id: "*"
         }
     }
 };

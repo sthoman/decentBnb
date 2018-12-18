@@ -86,4 +86,10 @@ contract('PropertyRegistry Contract Tests', accounts => {
     assert(propDetails[3] !== bob, 'PropertyRegistry allowed Bob to check in');
   });
 
+  //  Quick test of an oraclize oraclize_query
+  it('should allow oraclize_query', async () => {
+    let oraclizeResult = await _propertyRegistry.testOraclize(token_NFT, { from: alice });
+    assert(oraclizeResult, 'oraclize_query allowed');
+  });
+
 });
